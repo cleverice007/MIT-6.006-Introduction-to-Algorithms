@@ -341,148 +341,88 @@ class Transition:
         Transition._next_id += 1
         return id
 
+# =============================
+# 🔒 原本參考答案（min-heap）註解掉：
+# =============================
+
+# class PriorityQueue:
+#     """Heap-based priority queue implementation."""
+    
+#     def __init__(self):
+#         """Initially empty priority queue."""
+#         self.heap = [None]
+    
+#     def __len__(self):
+#         return len(self.heap) - 1
+    
+#     def append(self, key):
+#         if key is None:
+#             raise ValueError('Cannot insert None in the queue')
+#         i = len(self.heap)
+#         self.heap.append(key)
+#         while i > 1:
+#             parent = i // 2
+#             if key < self.heap[parent]:
+#                 self.heap[i], self.heap[parent] = self.heap[parent], key
+#                 i = parent
+#             else:
+#                 break
+    
+#     def min(self):
+#         return self.heap[1]
+    
+#     def pop(self):
+#         heap = self.heap
+#         popped_key = heap[1]
+#         if len(heap) == 2:
+#             return heap.pop()
+#         heap[1] = key = heap.pop()
+#         i = 1
+#         while True:
+#             left = i * 2
+#             if len(heap) <= left:
+#                 break
+#             left_key = heap[left]
+#             right = i * 2 + 1
+#             right_key = right < len(heap) and heap[right]
+#             if right_key and right_key < left_key:
+#                 child_key = right_key
+#                 child = right
+#             else:
+#                 child_key = left_key
+#                 child = left
+#             if key <= child_key:
+#                 break
+#             self.heap[i], self.heap[child] = child_key, key
+#             i = child
+#         return popped_key
+
+# =============================
+# 🧑‍💻 這裡是你可以練習寫自己的版本的地方
+# =============================
+
 class PriorityQueue:
-    """Heap-based priority queue implementation."""
-    
     def __init__(self):
-        """Initially empty priority queue."""
-        self.heap = [None]
-    
+        self.heap = [None]  # index 從 1 開始比較方便
+
     def __len__(self):
-        # Number of elements in the queue.
         return len(self.heap) - 1
-    
+
     def append(self, key):
-        """Inserts an element in the priority queue."""
-        if key is None:
-            raise ValueError('Cannot insert None in the queue')
-    
-        i = len(self.heap)
-        self.heap.append(key)
-        while i > 1:
-            parent = i // 2
-            if key < self.heap[parent]:
-                self.heap[i], self.heap[parent] = self.heap[parent], key
-                i = parent
-            else:
-                break
-    
-    def min(self):
-        """Returns the smallest element in the queue."""
-        return self.heap[1]
-    
-    def pop(self):
-        """Removes the minimum element in the queue.
-    
-        Returns:
-            The value of the removed element.
-        """
-        heap = self.heap
-        popped_key = heap[1]
-        if len(heap) == 2:
-            return heap.pop()
-        heap[1] = key = heap.pop()
-        
-        i = 1
-        while True:
-            left = i * 2
-            if len(heap) <= left:
-                break
-            left_key = heap[left]
-            right = i * 2 + 1
-            right_key = right < len(heap) and heap[right]
-            if right_key and right_key < left_key:
-                child_key = right_key
-                child = right
-            else:
-                child_key = left_key
-                child = left
-            if key <= child_key:
-                break
-            self.heap[i], self.heap[child] = child_key, key
-            i = child
-        return popped_key
-
-
-class PriorityQueue:
-    def __init__(self):
-        self.heap = [None]
-
-    def __len__(self):
-        return len(self.heap) - 1
-
-    def append(self,key):
-# 1
-        # self.heap.append(key)
-        # i = len(self.heap)-1
-        # while(i>0):
-        #     self.min_heapify(i)
-        #     i = i // 2
-# 1 
-# 2
-        # self.heap.append(key)
-        # i = len(self.heap)-1
-        # while(i > 1):
-        #     parent = i // 2
-        #     if(self.heap[parent] > self.heap[i]):
-        #         self.heap[parent],self.heap[i] = self.heap[i],self.heap[parent]
-        #         i = parent
-        #     else:
-        #         break
-# 2
-# 3
-        self.heap.append(key)
-        i = len(self.heap)-1
-        while(i>1):
-            parent = i // 2
-            if(self.heap[parent] >= key):
-                self.heap[i] = self.heap[parent]
-                i = parent
-            else:
-                break
-        self.heap[i]= key
+        # TODO: 實作 insert，並做 heapify-up
+        pass
 
     def min(self):
-        return self.heap[1]
+        # TODO: 回傳 heap 最小值（heap[1]）
+        pass
 
     def pop(self):
-# 1 
-        self.heap[1],self.heap[len(self.heap)-1] = self.heap[len(self.heap)-1],self.heap[1]
-        self.heap.pop(-1)
-        self.min_heapify(1)
-# 1
-# 2
+        # TODO: 刪除並回傳 heap 最小值，並做 heapify-down
+        pass
 
-# 2 
-    def min_heapify(self,n):
-# recursion
-        heap = self.heap
-        l = n*2
-        r = n*2+1
-        min = n
-        if l<len(heap) and heap[l] < heap[min]:
-            min = l
-        if  r<len(heap) and heap[r] < heap[min]:
-            min = r
-        if (min!=n):
-            heap[n],heap[min] = heap[min],heap[n]
-            self.min_heapify(min)   
-# iteration
-        heap = self.heap
-        while(n<len(self.heap)-1):
-            l = n*2
-            r = n*2+1
-            min = n
-            if l<len(heap) and heap[l] < heap[min]:
-                min = l
-            if  r<len(heap) and heap[r] < heap[min]:
-                min = r
-            if(min == n):
-                break
-            else:
-                heap[n],heap[min] = heap[min],heap[n]
-                n = min
-
+    def min_heapify(self, i):
+        # TODO: 維護 min-heap 性質（從 index i 開始往下）
+        pass
 
 
 class Simulation:
