@@ -403,18 +403,28 @@ class Transition:
 
 class PriorityQueue:
     def __init__(self):
-        self.heap = [None]  # index 從 1 開始比較方便
+        self.heap = [None]  
 
     def __len__(self):
         return len(self.heap) - 1
 
     def append(self, key):
-        # TODO: 實作 insert，並做 heapify-up
-        pass
+    if key is None:
+        raise ValueError('Cannot insert None in the queue')
+
+    self.heap.append(key)
+    index = len(self.heap) - 1
+    while index > 1:
+        parent = index // 2
+        if self.heap[index] < self.heap[parent]:
+            self.heap[index], self.heap[parent] = self.heap[parent], self.heap[index]
+            index = parent 
+        else:
+            break  
+
 
     def min(self):
-        # TODO: 回傳 heap 最小值（heap[1]）
-        pass
+        return self.heap[1]
 
     def pop(self):
         # TODO: 刪除並回傳 heap 最小值，並做 heapify-down
