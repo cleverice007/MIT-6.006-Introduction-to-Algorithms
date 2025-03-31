@@ -426,14 +426,35 @@ class PriorityQueue:
     def min(self):
         return self.heap[1]
 
+
+    # return the min value and remove it from the heap
     def pop(self):
-        # TODO: 刪除並回傳 heap 最小值，並做 heapify-down
-        pass
+    if len(self.heap) == 1:
+        return None
 
-    def min_heapify(self, i):
-        # TODO: 維護 min-heap 性質（從 index i 開始往下）
-        pass
+    min_val = self.heap[1]
+    self.heap[1] = self.heap[-1]
+    self.heap.pop()
 
+    index = 1
+    while index * 2 < len(self.heap):
+        left_child = index * 2
+        right_child = index * 2 + 1
+
+        if right_child < len(self.heap) and self.heap[right_child] < self.heap[left_child]:
+            min_child = right_child
+        else:
+            min_child = left_child
+
+        if self.heap[min_child] < self.heap[index]:
+            self.heap[min_child], self.heap[index] = self.heap[index], self.heap[min_child]
+            index = min_child
+        else:
+            break
+
+    return min_val
+
+# =============================
 
 class Simulation:
     """State needed to compute a circuit's state as it evolves over time."""
