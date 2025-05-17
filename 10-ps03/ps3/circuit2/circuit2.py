@@ -361,38 +361,47 @@ def _events_from_layer(self, layer):
 
 
   def _compute_crossings(self, count_only):
-    """Implements count_crossings and wire_crossings."""
+   
     if count_only:
-      result = 0
+        result = 0
     else:
-      result = self.result_set
+        result = self.result_set
 
+    # Iterate through all pre-sorted events: 'add', 'query', 'remove'
     for event in self.events:
-      event_x, event_type, wire = event[0], event[3], event[4]
-      
-      if event_type == 'add':  # 横线
-        self.index.add(KeyWirePair(wire.y1, wire))
-      elif event_type == 'query': # 竖线
+        event_x, event_type, wire = event[0], event[3], event[4]
+
+        # Optionally record sweep line movement for visualization
         self.trace_sweep_line(event_x)
 
-        cross_wires = []
-        for kwp in self.index.list(KeyWirePairL(wire.y1),
-                                   KeyWirePairH(wire.y2)):
-          if wire.intersects(kwp.wire):
-            cross_wires.append(kwp.wire)
-          
-      
-        if count_only:
-          result += len(cross_wires)
-        else:
-          for cross_wire in cross_wires:
-            result.add_crossing(wire, cross_wire)
-            
-        self.index = RangeIndex()
+        # If this is an 'add' event, insert horizontal wire into the range index
+        if event_type == 'add':
+            # We use the y1 (which equals y2) as the sorting key for horizontal wires
+            self.index.add(KeyWirePair(wire.y1, wire))
 
+        # If this is a 'remove' event, remove the horizontal wire from the range index
+        elif event_type == 'remove':
+            self.index.remove(KeyWirePair(wire.y1, wire))
 
+        # If this is a 'query' event from a vertical wire
+        elif event_type == 'query':
+            # If only counting, use efficient count function in the index
+            if count_only:
+                result += self.index.count(
+                    KeyWirePairL(wire.y1),  # bottom of vertical wire
+                    KeyWirePairH(wire.y2)   # top of vertical wire
+                )
+            else:
+                # Otherwise, collect all intersecting horizontal wires in range
+                for kwp in self.index.list(
+                    KeyWirePairL(wire.y1),
+                    KeyWirePairH(wire.y2)
+                ):
+                    result.add_crossing(wire, kwp.wire)
 
     return result
+
+
   
   def trace_sweep_line(self, x):
     """When tracing is enabled, adds info about where the sweep line is.
