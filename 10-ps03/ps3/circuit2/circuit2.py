@@ -138,37 +138,53 @@ class WireLayer(object):
     return layer
 
 class RangeIndex(object):
-  """Array-based range index implementation."""
+  """Sorted array-based range index implementation."""
   
   def __init__(self):
     """Initially empty range index."""
     self.data = []
   
   def add(self, key):
-    """Inserts a key in the range index."""
+    """Inserts a key in the range index in sorted order."""
     if key is None:
         raise ValueError('Cannot insert nil in the index')
-    self.data.append(key)
+    insert_index = self._binary_search(key)
+    self.data.insert(insert_index, key)
   
-  def remove(self, key):
-    """Removes a key from the range index."""
-    self.data.remove(key)
-  
-  # ineffective
-  def list(self, first_key, last_key):
-    """List of values for the keys that fall within [first_key, last_key]."""
-    return [key for key in self.data if first_key <= key <= last_key]
-  
-  # ineffective
-  def count(self, first_key, last_key):
-    """Number of keys that fall within [first_key, last_key]."""
-    result = 0
-    for key in self.data:
-      if first_key <= key <= last_key:
-        result += 1
-    return result
+ def remove(self, key):
+    """Removes a key from the range index using binary search."""
+    index = self._binary_search(key)
+    if index < len(self.data) and self.data[index] == key:
+        self.data.pop(index)
 
-class RangeIndex_AVL(object):
+  
+  def list(self, low_key, high_key):
+    """List of values for the keys that fall within [low_key, high_key]."""
+    low_index = self._binary_search(low_key)
+    high_index = self._binary_search(high_key)
+    return self.data[low_index:high_index]
+  
+ def count(self, low_key, high_key):
+    """Number of keys that fall within [low_key, high_key]."""
+    low_index = self._binary_search(low_key)
+    high_index = self._binary_search(high_key)
+    if high_index < len(self.data) and self.data[high_index] == high_key:
+      high_index += 1
+    return high_index - low_index
+
+  def _binary_search(self, key):
+    low = 0
+    high = len(self.data) - 1
+    while low <= high:
+      mid = (low + high) // 2
+      if self.data[mid] < key:
+        low = mid + 1
+      elif self.data[mid] > key:
+        high = mid - 1
+      else:
+        return mid
+    return high+1
+
   
   
 class TracedRangeIndex(RangeIndex):
