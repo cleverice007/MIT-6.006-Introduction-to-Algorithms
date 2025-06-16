@@ -40,7 +40,7 @@ def getExactSubmatches(a, b, k, m):
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print('Usage: {0} [file_a.fa] [file_b.fa] [output.png]'.format(sys.argv[0]))
+        print 'Usage: {0} [file_a.fa] [file_b.fa] [output.png]'.format(sys.argv[0])
         sys.exit(1)
 
     # The arguments are, in order: 1) Your getExactSubmatches

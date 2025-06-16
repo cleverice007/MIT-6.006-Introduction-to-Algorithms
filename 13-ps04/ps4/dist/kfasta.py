@@ -1,4 +1,3 @@
-
 #
 # Simple FASTA-reading library
 # Copyright 2010 Kevin Kelley <kelleyk@kelleyk.net>
@@ -18,10 +17,10 @@ class FastaSequence:
         self.pos = 0
     def __iter__(self):
         return self
-    def next(self):
-        while '' == self.buf:
+    def __next__(self):
+        while self.buf == '':
             self.buf = self.f.readline()
-            if '' == self.buf:
+            if self.buf == '':
                 self.f.close()
                 raise StopIteration
             self.buf = self.buf.strip()
@@ -29,6 +28,8 @@ class FastaSequence:
         self.buf = self.buf[1:]
         self.pos += 1
         return nextchar
+    # Python 2 compatibility
+    next = __next__
 
 def getSequenceLength(filename):
     seq = FastaSequence(filename)
@@ -43,7 +44,7 @@ def subsequences(seq, k):
         subseq = ''
         while True:
             while len(subseq) < k:
-                subseq += seq.next()
+                subseq += next(seq)
             yield subseq
             subseq = subseq[1:]
     except StopIteration:
@@ -61,8 +62,9 @@ class TestKFASTA(unittest.TestCase):
         seq = FastaSequence('trivial.fa')
         i = 0
         for subseq in subsequences(seq, 3):
-            print subseq
+            print(subseq)
             i += 1
         self.assertTrue(24 == i)
+
 #if __name__ == '__main__':
 #    unittest.main()
