@@ -23,7 +23,30 @@ class Multidict:
 # and their hashes.  (What else do you need to know about each
 # subsequence?)
 def subsequenceHashes(seq, k):
-    raise Exception("Not implemented!")
+    seq = iter(seq)  
+
+    subseq = ''
+    for i in range(k):
+        c = next(seq, None)
+        if c is None:
+            return  
+        subseq += c
+
+    rh = RollingHash(subseq)
+    pos = 0
+    yield (rh.current_hash(), (pos, subseq))
+
+    while True:
+        c = next(seq, None)
+        if c is None:
+            break
+        prev = subseq[0]
+        subseq = subseq[1:] + c
+        rh.slide(prev, c)
+        pos += 1
+        yield (rh.current_hash(), (pos, subseq))
+
+
 
 # Similar to subsequenceHashes(), but returns one k-length subsequence
 # every m nucleotides.  (This will be useful when you try to use two
