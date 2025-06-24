@@ -9,15 +9,21 @@ from dnaseqlib import *
 class Multidict:
     # Initializes a new multi-value dictionary, and adds any key-value
     # 2-tuples in the iterable sequence pairs to the data structure.
-    def __init__(self, pairs=[]):
-        raise Exception("Not implemented!")
+      def __init__(self, pairs=[]):
+        self.multidict = dict()
+        for k, v in pairs:
+            self.put(k, v)
     # Associates the value v with the key k.
     def put(self, k, v):
-        raise Exception("Not implemented!")
+        if k in self.multidict:
+            self.multidict[k].append(v)
+        else:
+            self.multidict[k] = [v]
     # Gets any values that have been associated with the key k; or, if
     # none have been, returns an empty sequence.
     def get(self, k):
-        raise Exception("Not implemented!")
+       return self.multidict.get(k, [])
+
 
 # Given a sequence of nucleotides, return all k-length subsequences
 # and their hashes.  (What else do you need to know about each
